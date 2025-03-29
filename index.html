@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Reader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: 50%;
+            height: 30px;
+            font-size: 18px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            width: 100px;
+            height: 30px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #3e8e41;
+        }
+
+        #text-output {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Text Reader</h1>
+    <input type="text" id="text-input" placeholder="Type something...">
+    <button id="read-button">Read</button>
+    <button id="voice-button">voice</button>
+    <div id="text-output"></div>
+
+    <script>
+        const textInput = document.getElementById('text-input');
+        const readButton = document.getElementById('read-button');
+        const textOutput = document.getElementById('text-output');
+        const voiceButton = document.getElementById('voice-button');
+
+        // Speech recognition
+        const recognition = new webkitSpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.maxResults = 10;
+
+        recognition.onresult = (event) => {
+            const text = event.results[0][0].transcript;
+            textInput.value = text;
+            textOutput.innerText = text;
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Error:', event.error);
+        };
+
+        readButton.addEventListener('click', () => {
+            const text = textInput.value.trim();
+            if (text !== '') {
+                textOutput.innerText = text;
+            } else {
+                textOutput.innerText = 'Please enter some text!';
+            }
+        });
+
+        voiceButton.addEventListener('click', () => {
+            recognition.start();
+            const text = textInput.value.trim();
+            if (text !== '') {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 1;
+                utterance.volume = 1;
+                window.speechSynthesis.speak(utterance);
+            }
+        });
+
+    </script>
+</body>
+
+</html>
